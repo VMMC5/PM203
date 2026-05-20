@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practica No.3: Coffee Code II</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        button { background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+        button:hover { background-color: #2980b9; }
+        #btnPedir { background-color: #2ecc71; }
+        #btnPedir:hover { background-color: #27ae60; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <h1>Bienvenido a Coffee Code</h1>
+    <p>Operaciones del negocio disponibles de forma interactiva:</p>
+    
+    <button id="btnFiltrar">Filtrar Productos (Cocina)</button>
+    <button id="btnPedir">Crear Nuevo Pedido (Caja)</button>
+
+    <h3>Consola de Pantalla:</h3>
+    <pre id="pantalla">Haz clic en "Filtrar Productos" para explorar el catálogo o en "Crear Nuevo Pedido" para comprar...</pre>
+
+    <script type="module">
+        import { mostrarMenuDinamico, mostrarPromociones } from './cliente.js';
+        import { obtenerProductosBaratos, obtenerProductosCaros, obtenerPorCategoria, catalogo } from './cocina.js';
+        import { agregarPedido, imprimirTicket, limpiarCarrito } from './caja.js';
+
+        // Log inicial obligatorio en F12
+        mostrarMenuDinamico();
+        mostrarPromociones();
+
+        // CLIENTE TENGA DISPONIBLE FILTROS
+        const ejecutarFiltrosCliente = () => {
+            const opcion = prompt(
+                "¿Qué tipo de productos deseas buscar?\n\n" +
+                "Escribe una opción:\n" +
+                "- 'baratos' (Menores a $50)\n" +
+                "- 'caros' (De $100 o más)\n" +
+                "- 'comida'\n" +
+                "- 'bebida'\n" +
+                "- 'postre'\n" +
+                "- 'todos' (Ver catálogo completo disponible)"
+            );
+
+            if (!opcion) return;
+
+            let resultadoFiltro = [];
+            let titulo = "";
+
+            // Mapeo de funciones de cocina.js según la entrada del cliente
+            switch(opcion.toLowerCase().trim()) {
+                case 'baratos':
+                    resultadoFiltro = obtenerProductosBaratos();
+                    titulo = "PRODUCTOS ECONÓMICOS (< $50)";
+                    break;
+                case 'caros':
+                    resultadoFiltro = obtenerProductosCaros();
+                    titulo = "PRODUCTOS PREMIUM (>= $100)";
+                    break;
+                case 'comida':
+                case 'bebida':
+                case 'postre':
+                    resultadoFiltro = obtenerPorCategoria(opcion.toLowerCase());
+                    titulo = `CATEGORÍA: ${opcion.toUpperCase()}`;
+                    break;
+                case 'todos':
+                    resultadoFiltro = catalogo;
+                    titulo = "CATÁLOGO COMPLETO DISPONIBLE";
+                    break;
+                default:
+                    alert("Opción de filtro no válida.");
+                    return;
+            }
+
+            let textoPantalla = `--- FILTRO APLICADO: ${titulo} ---\n`;
+            if(resultadoFiltro.length === 0) {
+                textoPantalla += "No se encontraron productos disponibles en esta sección.\n";
+            } else {
+                resultadoFiltro.forEach(({ id, nombre, precio, promocion }) => {
+                    textoPantalla += `ID: [${id}] - ${nombre} | Precio Base: $${precio} ${promocion ? '¡Tiene 10% de Descuento!' : ''}\n`;
+                });
+            }
+            textoPantalla += `--------------------------------------------------`;
+            
+            document.getElementById("pantalla").textContent = textoPantalla;
+        };
+
+        // CREAR UN NUEVO PEDIDO E INTERACCIÓN DE COMPRA
+        const iniciarProcesoCompra = () => {
+            limpiarCarrito(); 
+            
+            const nombre = prompt("Ingresa el nombre del cliente para abrir la cuenta:");
+            if (!nombre) return alert("Proceso cancelado.");
+
+            let continuar = true;
+            while (continuar) {
+                const idSeleccionado = prompt(
+                    `Cliente: ${nombre.toUpperCase()}\n` +
+                    `Ingresa el número (ID) del producto para agregarlo al pedido.\n` +
+                    `Puedes revisar los IDs en la pantalla de filtros detrás de esta ventana.\n\n` +
+                    `Escribe el ID numérico:`
+                );
+
+                if (idSeleccionado) {
+                    agregarPedido(parseInt(idSeleccionado));
+                }
+                continuar = confirm("¿Deseas seguir agregando más artículos a tu orden?");
+            }
+
+            // Imprimir el ticket que ya incluye los cálculos automáticos y descuentos reducidos
+            const ticketFinal = imprimirTicket(nombre);
+            document.getElementById("pantalla").textContent = ticketFinal;
+        };
+
+        // Asignación de eventos a los botones
+        document.getElementById("btnFiltrar").addEventListener("click", ejecutarFiltrosCliente);
+        document.getElementById("btnPedir").addEventListener("click", iniciarProcesoCompra);
+    </script>
+</body>
+</html>
