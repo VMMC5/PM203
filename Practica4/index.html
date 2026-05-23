@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Practica No.4: Coffee Code Asíncrono</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; background-color: #f4f7f6; }
+        button { background-color: #3498db; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; margin-right: 10px; }
+        button:hover { background-color: #2980b9; }
+        #btnPedir { background-color: #2ecc71; }
+        #btnPedir:hover { background-color: #27ae60; }
+        pre { background: #2c3e50; color: #ecf0f1; padding: 15px; border-radius: 5px; overflow-x: auto; font-size: 14px; white-space: pre-wrap;}
+    </style>
+</head>
+<body>
+    <h1>Bienvenido a Coffee Code</h1>
+    <p>Operaciones del negocio disponibles de forma interactiva:</p>
+    
+    <button id="btnFiltrar">Filtrar Productos</button>
+    <button id="btnPedir">Crear Nuevo Pedido</button>
+
+    <h3>Consola de Pantalla:</h3>
+    <pre id="pantalla">Haz clic en "Filtrar Productos" para explorar el catálogo o en "Crear Nuevo Pedido" para comprar...</pre>
+
+    <script type="module">
+        import { mostrarMenuDinamico, mostrarPromociones, esperarTiempo } from './cliente.js';
+        import { obtenerProductosBaratos, obtenerProductosCaros, obtenerPorCategoria, catalogo } from './cocina.js';
+        import { agregarPedido, imprimirTicket, limpiarCarrito, procesarOrdenAsincrona } from './caja.js';
+
+        mostrarMenuDinamico();
+        mostrarPromociones();
+
+        const ejecutarFiltrosCliente = () => {
+            const opcion = prompt("¿Qué buscas?\n- 'baratos'\n- 'caros'\n- 'comida'\n- 'bebida'\n- 'postre'\n- 'todos'");
+            if (!opcion) return;
+
+            let resultado = [];
+            let titulo = "";
+
+            switch(opcion.toLowerCase().trim()) {
+                case 'baratos': resultado = obtenerProductosBaratos(); titulo = "ECONÓMICOS"; break;
+                case 'caros': resultado = obtenerProductosCaros(); titulo = "PREMIUM"; break;
+                case 'comida': case 'bebida': case 'postre': resultado = obtenerPorCategoria(opcion.toLowerCase()); titulo = opcion.toUpperCase(); break;
+                case 'todos': resultado = catalogo; titulo = "COMPLETO"; break;
+                default: return alert("Opción no válida.");
+            }
+
+            let texto = `--- FILTRO: ${titulo} ---\n`;
+            resultado.forEach(p => texto += `[ID: ${p.id}] ${p.nombre} - $${p.precio}\n`);
+            document.getElementById("pantalla").textContent = texto;
+        };
+
+        // En esta parte usamos async para poder usar await dentro de la función
+        const iniciarProcesoCompra = async () => {
+            limpiarCarrito(); 
+            const pantalla = document.getElementById("pantalla");
+            
+            const nombre = prompt("Ingresa el nombre del cliente:");
+            if (!nombre) return;
+
+            let continuar = true;
+            let items = 0;
+            while (continuar) {
+                const id = prompt(`Cliente: ${nombre}\nIngresa el ID del producto:`);
+                if (id) {
+                    const agregado = agregarPedido(parseInt(id));
+                    if(agregado) items++;
+                }
+                continuar = confirm("¿Agregar más artículos?");
+            }
+
+            if (items === 0) return alert("Pedido vacío cancelado.");
+
+            // Secuencia que nos sirve de apoyo visual para entender el proceso de compra 
+            pantalla.textContent = `=== PROCESANDO ORDEN ===\n`;
+            
+            pantalla.textContent += `Pedido recibido...\n`;
+            await esperarTiempo(1500); 
+
+            pantalla.textContent += `Preparando.........\n`;
+            await esperarTiempo(1500);
+
+            pantalla.textContent += `Empacando..........\n`;
+
+            // Aquí definimos los callbacks que enviaremos a la Caja
+            const alTenerExito = () => {
+                pantalla.textContent += `Pedido Entregado\n`;
+                pantalla.textContent += imprimirTicket(nombre);
+            };
+
+            const alTenerError = (error) => {
+                pantalla.textContent += `Pedido Cancelado\n`;
+                pantalla.textContent += `Motivo: ${error.message}\n`;
+                limpiarCarrito();
+            };
+
+            // Para finalizar, llamamos a la caja y le pasamos nuestras instrucciones (callbacks)
+            procesarOrdenAsincrona(alTenerExito, alTenerError);
+        };
+
+        document.getElementById("btnFiltrar").addEventListener("click", ejecutarFiltrosCliente);
+        document.getElementById("btnPedir").addEventListener("click", iniciarProcesoCompra);
+    </script>
+</body>
+</html>
