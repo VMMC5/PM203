@@ -8,7 +8,7 @@ export const catalogo = [
     { id: 7, nombre: "Helado de Vainilla", precio: 45, categoria: "postre", promocion: true }
 ];
 
-// Buscar productos usando filter() y find()
+// Estas funciones sirven para buscar productos usando filter() y find()
 export const obtenerPorCategoria = (cat) => catalogo.filter(p => p.categoria === cat);
 export const obtenerProductosBaratos = () => catalogo.filter(p => p.precio < 50);
 export const obtenerProductosCaros = () => catalogo.filter(p => p.precio >= 100);

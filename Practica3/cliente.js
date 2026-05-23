@@ -1,6 +1,6 @@
 import { catalogo } from './cocina.js';
 
-// Mostrar menú dinámico, promociones y productos disponibles
+// Esta función nos ayuda a mostrar el menú dinámico, promociones y productos disponibles
 export const mostrarMenuDinamico = () => {
     console.log("\n--- MENÚ ---");
     catalogo.forEach(({ nombre, precio }) => {

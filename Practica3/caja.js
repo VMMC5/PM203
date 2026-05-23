@@ -16,7 +16,7 @@ export const agregarPedido = (idProducto) => {
     }
 };
 
-// Calcular subtotal con descuentos dinámicos usando reduce()
+// Aquí calculamos el subtotal con descuentos dinámicos usando reduce()
 export const calcularCuentaAutomatica = () => {
     const subtotal = listaPedidos.reduce((acumulador, producto) => {
         const precioAplicado = producto.promocion ? producto.precio * 0.9 : producto.precio;

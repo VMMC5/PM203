@@ -28,11 +28,10 @@
         import { obtenerProductosBaratos, obtenerProductosCaros, obtenerPorCategoria, catalogo } from './cocina.js';
         import { agregarPedido, imprimirTicket, limpiarCarrito } from './caja.js';
 
-        // Log inicial obligatorio en F12
         mostrarMenuDinamico();
         mostrarPromociones();
 
-        // CLIENTE TENGA DISPONIBLE FILTROS
+        // Menú para que el cliente pueda filtrar los productos
         const ejecutarFiltrosCliente = () => {
             const opcion = prompt(
                 "¿Qué tipo de productos deseas buscar?\n\n" +
@@ -50,7 +49,7 @@
             let resultadoFiltro = [];
             let titulo = "";
 
-            // Mapeo de funciones de cocina.js según la entrada del cliente
+            // Hacemos un mapeo de funciones de cocina.js según la entrada elegida por el cliente
             switch(opcion.toLowerCase().trim()) {
                 case 'baratos':
                     resultadoFiltro = obtenerProductosBaratos();
@@ -88,7 +87,7 @@
             document.getElementById("pantalla").textContent = textoPantalla;
         };
 
-        // CREAR UN NUEVO PEDIDO E INTERACCIÓN DE COMPRA
+        // Funión para crear un nuevo pedido y poder agregar productos
         const iniciarProcesoCompra = () => {
             limpiarCarrito(); 
             
@@ -110,12 +109,12 @@
                 continuar = confirm("¿Deseas seguir agregando más artículos a tu orden?");
             }
 
-            // Imprimir el ticket que ya incluye los cálculos automáticos y descuentos reducidos
+            // Imprimimos el ticket con los cálculos automáticos y descuentos reducidos
             const ticketFinal = imprimirTicket(nombre);
             document.getElementById("pantalla").textContent = ticketFinal;
         };
 
-        // Asignación de eventos a los botones
+        // Asignamos los eventos a los botones
         document.getElementById("btnFiltrar").addEventListener("click", ejecutarFiltrosCliente);
         document.getElementById("btnPedir").addEventListener("click", iniciarProcesoCompra);
     </script>
