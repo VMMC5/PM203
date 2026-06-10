@@ -1,8 +1,9 @@
 /* Zona1: Importaciones de componentes y archivos */
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Image } from 'react-native';
-import {Saludo} from './components/Saludo';
-import {Saludo2} from './components/Saludo2';
+import { Saludo } from './components/Saludo';
+import { Saludo2 } from './components/Saludo2';
+import { Perfil } from './components/Perfil';
 
 /* Zona2: Main - Hogar de los componentes */
 export default function App() {
@@ -10,16 +11,21 @@ export default function App() {
     <View style={styles.container}>
 
       <Text>-------------------------- Componentes Nativos --------------------------</Text>
-      <Image source={require('./assets/wave.png')}/>
+      <Image source={require('./assets/wave.png')} />
       <Text>Hola Mundo React Native</Text>
       <Text>-----------------------------------------------------------------------------</Text>
 
-      <Text>-------------------------- Componentes Propio Simple --------------------------</Text>
-      <Saludo></Saludo>
+      <Text>-------------------------- Componente Propio Simple --------------------------</Text>
+      <Saludo />
       <Text>-----------------------------------------------------------------------------------</Text>
 
-      <Text>-------------------------- Componentes Propio Compuesto --------------------------</Text>
-      <Saludo2></Saludo2>
+      <Text>-------------------------- Componentes Propios Compuestos --------------------------</Text>
+      <Saludo2 />
+      <Text>-----------------------------------------------------------------------------------</Text>
+
+      <Text>-------------------------- Componente Perfil --------------------------</Text>
+      <Perfil />
+      <Text>-----------------------------------------------------------------------</Text>
 
       <StatusBar style="auto" />
     </View>
