@@ -24,7 +24,7 @@ export default function App() {
       <Text>-----------------------------------------------------------------------------------</Text>
 
       <Text>-------------------------- Componente Perfil --------------------------</Text>
-      <Perfil />
+      <Perfil nombre="Victor Manuel Molina Caballero" carrera="Ingeniería en Sistemas Computacionales" materia="Programación Móvil" cuatrimestre="9no" />
       <Text>-----------------------------------------------------------------------</Text>
 
       <StatusBar style="auto" />
