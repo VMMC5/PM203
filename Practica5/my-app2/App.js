@@ -10,22 +10,26 @@ export default function App() {
   return (
     <View style={styles.container}>
 
-      <Text>-------------------------- Componentes Nativos --------------------------</Text>
-      <Image source={require('./assets/wave.png')} />
-      <Text>Hola Mundo React Native</Text>
-      <Text>-----------------------------------------------------------------------------</Text>
+      <Perfil 
+      estiloExt={styles.tarjetaRoja} 
+      nombre="Victor Manuel Molina Caballero" 
+      carrera="Ingeniería en Sistemas Computacionales" 
+      materia="Programación Móvil" 
+      cuatrimestre="9no" />
 
-      <Text>-------------------------- Componente Propio Simple --------------------------</Text>
-      <Saludo />
-      <Text>-----------------------------------------------------------------------------------</Text>
+      <Perfil 
+      estiloExt={styles.tarjetaVerde} 
+      nombre="VMMC" 
+      carrera="ISC" 
+      materia="PM" 
+      cuatrimestre="9" />
 
-      <Text>-------------------------- Componentes Propios Compuestos --------------------------</Text>
-      <Saludo2 />
-      <Text>-----------------------------------------------------------------------------------</Text>
-
-      <Text>-------------------------- Componente Perfil --------------------------</Text>
-      <Perfil nombre="Victor Manuel Molina Caballero" carrera="Ingeniería en Sistemas Computacionales" materia="Programación Móvil" cuatrimestre="9no" />
-      <Text>-----------------------------------------------------------------------</Text>
+      <Perfil 
+      estiloExt={styles.tarjetaRoja} 
+      nombre="Victor Manuel Molina Caballero" 
+      carrera="Ingeniería en Sistemas Computacionales" 
+      materia="Programación Móvil" 
+      cuatrimestre="9no" />
 
       <StatusBar style="auto" />
     </View>
@@ -38,6 +42,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'space-evenly',
+    flexDirection: 'row',
   },
+  tarjetaRoja:{backgroundColor: 'red'},
+  tarjetaVerde:{backgroundColor: 'green'},
 });
